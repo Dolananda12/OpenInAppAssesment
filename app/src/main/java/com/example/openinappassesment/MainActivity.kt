@@ -68,6 +68,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -100,6 +101,7 @@ import com.example.openinappassesment.Database.TokenDatabase
 import com.example.openinappassesment.Database.TokenRepository
 import com.example.openinappassesment.Navigaiton.BottomNavigationItem
 import com.example.openinappassesment.Navigaiton.Screens
+import com.example.openinappassesment.Network.DashboardObject
 import com.example.openinappassesment.Network.RecentLink
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -157,9 +159,19 @@ class MainActivity : ComponentActivity() {
                 Text("Hi Ajay Manva!!", fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, color = Color.Black)
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
-                Text("Number: ${viewModel.response.support_whatsapp_number}", fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, color = Color.Black)
+                Text("Number: ${viewModel.response!!.support_whatsapp_number}", fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, color = Color.Black)
             }
         }
+    }
+    @Composable
+    fun showLoadingOrNot() : Boolean{
+        val s by rememberSaveable {
+            mutableStateOf<DashboardObject?>(viewModel.response)
+        }
+        if(s!=null){
+            return true
+        }
+        return false
     }
     @Composable
     fun Home_Screen(){
@@ -173,7 +185,7 @@ class MainActivity : ComponentActivity() {
             var loading by remember {
                 mutableStateOf(false)
             }
-            if (!loading) {
+            if (!loading&&!showLoadingOrNot()) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -216,7 +228,7 @@ class MainActivity : ComponentActivity() {
                             CardDefaults.elevatedCardColors().contentColor
                         )
                     ) {
-                        if (viewModel.response.data.overall_url_chart != null) {
+                        if (viewModel.response!!.data.overall_url_chart != null) {
                             LineGraph(
                                 xData = viewModel.getLineChartData().first,
                                 yData = viewModel.getLineChartData().second,
@@ -386,7 +398,7 @@ class MainActivity : ComponentActivity() {
             }
             if(selected){
                 //show Top Links
-                val list = viewModel.response.data.top_links
+                val list = viewModel.response!!.data.top_links
                 if(list!=null){
                     for(i in 0..<number_ofLinks){
                         LinkCard(uniqueResponse = list[i])
@@ -394,14 +406,14 @@ class MainActivity : ComponentActivity() {
                 }
             }else{
                 //show recent links
-                val list = viewModel.response.data.recent_links
+                val list = viewModel.response!!.data.recent_links
                 if(list!=null){
                     for(i in 0..<number_ofLinks){
                         LinkCard(uniqueResponse = list[i])
                     }
                 }
             }
-            if(viewModel.response.data.recent_links!=null) {
+            if(viewModel.response!!.data.recent_links!=null) {
                 Rectangular_Button(
                     s = "View All Links",
                     index = 0,
@@ -410,7 +422,7 @@ class MainActivity : ComponentActivity() {
                     BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.img_5)
                         .asImageBitmap()
                 ) {
-                  number_ofLinks= viewModel.response.data.recent_links!!.size
+                  number_ofLinks= viewModel.response!!.data.recent_links!!.size
                 }
             }
         }
@@ -461,11 +473,11 @@ class MainActivity : ComponentActivity() {
                 .padding(5.dp)
                 .heightIn(0.dp, 250.dp), horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            println("response is" + (viewModel.response.data.top_links?.size))
-            println("response is" + (viewModel.response.data.recent_links?.size))
+            println("response is" + (viewModel.response!!.data.top_links?.size))
+            println("response is" + (viewModel.response!!.data.recent_links?.size))
             item("Today_clicks") {
                 Single_card(
-                    data_point = viewModel.response.today_clicks.toString(),
+                    data_point = viewModel.response!!.today_clicks.toString(),
                     data_key = "today_clicks",
                     index = 0
                 )
@@ -475,7 +487,7 @@ class MainActivity : ComponentActivity() {
             }
             item("Top_Location") {
                 Single_card(
-                    data_point = viewModel.response.top_location,
+                    data_point = viewModel.response!!.top_location,
                     data_key = "top_location",
                     index = 1
                 )
@@ -485,7 +497,7 @@ class MainActivity : ComponentActivity() {
             }
             item("Top_Source") {
                 Single_card(
-                    data_point = viewModel.response.top_source,
+                    data_point = viewModel.response!!.top_source,
                     data_key = "top_source",
                     index = 2
                 )

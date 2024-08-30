@@ -1,5 +1,9 @@
 package com.example.openinappassesment.Network
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class RecentLink(
     val app: String,
     val created_at: String,
@@ -15,4 +19,4 @@ data class RecentLink(
     val url_prefix: String?,
     val url_suffix: String,
     val web_link: String
-)
+) : Parcelable

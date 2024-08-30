@@ -1,5 +1,9 @@
 package com.example.openinappassesment.Network
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class DashboardObject(
     var today_clicks: Int=0,
     var top_location: String="",
@@ -15,4 +19,4 @@ data class DashboardObject(
     var status: Boolean=false,
     var statusCode: Int=200,
     var support_whatsapp_number: String=""
-)
+) : Parcelable

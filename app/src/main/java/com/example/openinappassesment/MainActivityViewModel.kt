@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 import java.time.Month
 
 class MainActivityViewModel(private val repository: TokenRepository) : ViewModel(){
-    var response:DashboardObject = DashboardObject()
+    var response:DashboardObject? = null
     fun ApiService(): MutableLiveData<Boolean>{
         var token =""
         val done = MutableLiveData(false)
@@ -132,7 +132,7 @@ class MainActivityViewModel(private val repository: TokenRepository) : ViewModel
     }
     fun getLineChartData() : Pair<List<String>,List<Float>>{
         val h : MutableList<Float> = ArrayList()
-        val p = response.data.overall_url_chart
+        val p = response!!.data.overall_url_chart
         val l = p?.values?.toMutableList()
         if (l != null) {
             for(i in 0..<l.size){
